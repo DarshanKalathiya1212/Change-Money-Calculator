@@ -1,3 +1,6 @@
+const addEditBtn = document.getElementById("addEditBtn");
+const findResult = document.getElementById("findResult");
+
 // Initial Data
 let tableEntries = []; // [{500:3}, {100:4}....]
 
@@ -69,6 +72,7 @@ function updateUITable() {
     cell2.classList.add("zoom");
     cell3.innerHTML = `<button class="edit" data-index=${i} onclick="editDataEntry(event);">Edit</button>`;
     cell3.classList.add("zoom");
+
   }
 
   // clear inputs field from ui
@@ -114,8 +118,16 @@ function editDataEntry(e) {
   addEditBtn.dataset["index"] = index;
 }
 
+function updateResutl(){
+  let table = document.getElementById("result");
+  let tBody = table.getElementsByTagName("tbody")[0];
+
+  tBody.innerHTML = "";
+}
+
 //change Logic
 function CalPayHandler(e) {
+  updateResutl();
   const expense = Number(document.getElementById("expense").value);
   const given = Number(document.getElementById("give").value);
 
@@ -133,7 +145,6 @@ function CalPayHandler(e) {
     let change = given - expense; // What value to return give
     let tableEnteriesCopy = JSON.parse(JSON.stringify(tableEntries)); // make copy of tableEntries
     let result = []; // store the main result in this array
-
     let minCount1 = Infinity; // store the minimum notes for all time.
 
     // brute force approach
@@ -213,19 +224,15 @@ function CalPayHandler(e) {
         } else {
           resultState[indexInner][keyInner]++;
         }
-        changeState -= keyInner;  // amount minus kari changeState mathi.
-        j--;  // pachi note check karo 
+        changeState -= keyInner; // amount minus kari changeState mathi.
+        j--; // pachi note check karo
       }
       if (changeState == 0 && minCount2 < minCount1) {
         tableEnteriesCopy = JSON.parse(JSON.stringify(tableEnteriesCopyState));
         result = JSON.parse(JSON.stringify(resultState));
         minCount1 = minCount2;
       }
-      console.log("minCOunt2: "+ minCount2);
     }
-    console.log("tableEnteriesCopy:", tableEnteriesCopy);
-    console.log("result:", result);
-    console.log("minCount1:", minCount1);
 
     if (minCount1 != Infinity) {
       // update the tableEnteries array
@@ -251,6 +258,8 @@ function CalPayHandler(e) {
       document.getElementById("expense").value = "";
       document.getElementById("give").value = "";
     } else {
+      document.getElementById("expense").value = "";
+      document.getElementById("give").value = "";
       alert("No Change Found");
       return;
     }
